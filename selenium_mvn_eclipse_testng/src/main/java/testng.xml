@@ -14,7 +14,7 @@
 	</test>
 
 	<test name="VerifyRequiredFields">
-		<parameter name="browser" value="Opera" />
+		<parameter name="browser" value="Chrome" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/VerifyRequiredFields_DataFile.csv" />
@@ -43,7 +43,7 @@
 
 
 	<test name="VerifyValidAndInvalidEmailAddress" preserve-order="true">
-		<parameter name="browser" value="Firefox" />
+		<parameter name="browser" value="Chrome" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="validEmailDataFile"
 			value="src/main/resources/TestCaseFiles/ValidEmailAddresses_DataFile.csv" />

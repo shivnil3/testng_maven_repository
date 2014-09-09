@@ -17,9 +17,10 @@ import loggerFunctions.CustomAsserts;
  * - Clicking on Contact us button 
  * - Filling all the field on the contact us form 
  * - Submitting the form 
- * - Verifying the 'Thanks....' message on the page. 
+ * - Verifying the 'Thanks....' message on the page.
  * 
- * Compare this total time with an expected time and set the status of test case based on that.
+ * Compare this total time with an expected time and set the status of test case
+ * based on that.
  * 
  * @author Nilesh Awasthey
  *
@@ -33,6 +34,7 @@ public class VerifyBasicPerformanceOfContactUsForm extends CommonActions {
 	String ById = "id";
 	String ByXpath = "xpath";
 	String ByClassName = "className";
+	long expectedTotalTimeInMilliSeconds = 4500;
 	CustomAsserts asserts = new CustomAsserts();
 
 	@BeforeTest
@@ -72,7 +74,6 @@ public class VerifyBasicPerformanceOfContactUsForm extends CommonActions {
 
 		String confirmationMsg = "Thanks for contacting us. Your message was received.";
 		String issueDetailsText = issueDetailsTestString + (getRandomNum());
-		long expectedTotalTimeInMilliSeconds = 4000;
 		long startTime;
 		long endTime;
 		long actualTotalTimeInMilliSeconds;
