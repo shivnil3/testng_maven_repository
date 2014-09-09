@@ -12,6 +12,16 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * Verify appropriate validation messages are displayed for required fields -
+ * Email and Issue details. If the user leaves these fields empty and tries to
+ * submit the Contact us form, it should display appropriate validation messages
+ * respectively.
+ * 
+ * 
+ * @author Nilesh Awasthey
+ *
+ */
 public class VerifyRequiredFields extends CommonActions {
 
 	String browserToUse;

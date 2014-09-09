@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Suite" parallel="none" thread-count="2">
+<suite name="Suite" parallel="tests" thread-count="2">
 	<listeners>
 		<listener class-name="loggerFunctions.CustomTestListener" />
 	</listeners>
 
-	<!--  <test name="VerifyElements">
+	<test name="VerifyElements">
 		<parameter name="browser" value="Chrome" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<classes>
@@ -21,7 +21,7 @@
 		<classes>
 			<class name="testcases.VerifyRequiredFields" />
 		</classes>
-	</test>-->
+	</test>
 
 	<test name="SubmitContactFormAndVerifyEmail">
 		<parameter name="browser" value="Firefox" />
@@ -33,7 +33,7 @@
 		</classes>
 	</test>
 
-	<!--  <test name="VerifyToolTips">
+	<test name="VerifyToolTips">
 		<parameter name="browser" value="Firefox" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<classes>
@@ -55,7 +55,7 @@
 	</test>
 
 	<test name="VerifyCloseIconFunctionality">
-		<parameter name="browser" value="Firefox" />
+		<parameter name="browser" value="Opera" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
@@ -75,7 +75,7 @@
 	</test>
 
 	<test name="VerifyBasicPerformanceOfContactUsForm">
-		<parameter name="browser" value="Opera" />
+		<parameter name="browser" value="Firefox" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
@@ -85,13 +85,13 @@
 	</test>
 
 	<test name="VerifyInValidStringsAreHandledProperly">
-		<parameter name="browser" value="Firefox" />
+		<parameter name="browser" value="Chrome" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/ValidAndInvalidString_DataFile.csv" />
 		<classes>
 			<class name="testcases.VerifyInValidStringsAreHandledProperly" />
 		</classes>
-	</test>-->
+	</test>
 
 </suite> 

@@ -12,6 +12,16 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * Provide a set of valid and invalid input strings to the Name and Issue detail
+ * field through the data file (ValidAndInvalidString_DataFile.csv). The Contact
+ * us form should be able to handle the invalid string and it should not throw
+ * any exceptions on the page. The form should be successfully submitted and it
+ * should display the 'Thanks...' message on the page.
+ * 
+ * @author Nilesh Awasthey
+ *
+ */
 public class VerifyInValidStringsAreHandledProperly extends CommonActions {
 
 	String browserToUse;

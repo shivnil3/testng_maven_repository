@@ -12,6 +12,15 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * Verify the Contact Us form is closed after clicking on the Close(X) icon.
+ * This script will fill up all fields on the Contact us form and close the form
+ * using the Close(X) icon without submitting the form.
+ * 
+ * 
+ * @author Nilesh Awasthey
+ *
+ */
 public class VerifyCloseIconFunctionality extends CommonActions {
 
 	String browserToUse;

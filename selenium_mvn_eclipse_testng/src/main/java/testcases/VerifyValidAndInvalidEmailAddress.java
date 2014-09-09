@@ -12,6 +12,21 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * It covers two scenarios - 
+ * 
+ * - Provide a set of valid email addresses through
+ * data file(ValidEmailAddresses_DataFile.csv) and verify the Email text box
+ * does not display any validation message 
+ * 
+ * - Provide a set of invalid email
+ * addresses through data file(InValidEmailAddresses_DataFile.csv) and verify
+ * the Email text box displays a 'Invalid email address' message for each of them
+ * 
+ *  
+ * @author Nilesh Awasthey
+ *
+ */
 public class VerifyValidAndInvalidEmailAddress extends CommonActions {
 
 	String browserToUse;

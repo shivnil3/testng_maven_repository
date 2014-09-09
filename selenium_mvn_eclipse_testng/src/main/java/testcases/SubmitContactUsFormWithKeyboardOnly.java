@@ -13,6 +13,14 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * Submit the Contact Us form using keyboard keys only. It should display the
+ * 'Thanks....' message on the page after successful submission of the Contact
+ * Us form.
+ * 
+ * @author Nilesh Awasthey
+ *
+ */
 public class SubmitContactUsFormWithKeyboardOnly extends CommonActions {
 
 	String browserToUse;

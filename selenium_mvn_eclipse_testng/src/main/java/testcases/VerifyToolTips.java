@@ -12,6 +12,13 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * Hover the mouse on the text boxes for Name, Email and Issue details on the Contact Us form and
+ * verify it displays the tool tip for each of them.
+ * 
+ * @author Nilesh Awasthey
+ *
+ */
 public class VerifyToolTips extends CommonActions {
 
 	String browserToUse;

@@ -12,6 +12,16 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * Fill up the fields with valid input values and submit the Contact Us form. It
+ * should display the 'Thanks....' message on the page after successful
+ * submission of the Contact Us form. It should also send a notification mail to
+ * specified email address. Login to the mail account and verify the
+ * notification mail is received.
+ * 
+ * @author Nilesh Awasthey
+ *
+ */
 public class SubmitContactFormAndVerifyEmail extends CommonActions {
 
 	String browserToUse;
@@ -119,8 +129,8 @@ public class SubmitContactFormAndVerifyEmail extends CommonActions {
 
 		// Check for notification message
 		asserts.log("Checking the notification mail on test gmail account....");
-		Boolean mailFoundStatus=confirmNotificationMail(emailTestString, emailPwd,
-				issueDetailsText);
+		Boolean mailFoundStatus = confirmNotificationMail(emailTestString,
+				emailPwd, issueDetailsText);
 		asserts.assertTrue(mailFoundStatus, "Notification mail not recieved");
 		asserts.log("Notification mail was recieved");
 

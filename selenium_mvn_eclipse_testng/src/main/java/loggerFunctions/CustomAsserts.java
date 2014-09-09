@@ -10,12 +10,12 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 
 /**
- * Custom asserts class
+ * Custom Assert class
  *
- * @author xyz
+ * @author unknown
  * 
- * @modified Nilesh Awasthey - Added some verify methods which internally call
- *           the standard assert methods in a try/catch block
+ * @modified Nilesh Awasthey - Added some custom verify methods which internally
+ *           call the standard assert methods in a try/catch block
  */
 
 public class CustomAsserts {

@@ -11,6 +11,13 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * Verify all the labels, text boxes, header text, close(x) icon and submit button
+ * exists on the Contact us form.
+ * 
+ * @author Nilesh Awasthey
+ *
+ */
 public class VerifyElements extends CommonActions {
 
 	String browserToUse;

@@ -51,19 +51,19 @@ public class ElementIdentifiers {
 			elementIdentifiersFileInputStream = new FileInputStream(
 					"src/main/resources/Properties_files/ElementIdentifiers.properties");
 			prop.load(elementIdentifiersFileInputStream);
-			
+
 			Field[] elementIdentifiers = getDeclaredFieldsOfCurrentClass();
 
 			for (Field elementIdentifier : elementIdentifiers) {
-			if(elementIdentifier!=null)
-			{
-				propertyValue = prop.getProperty(elementIdentifier.getName());
-				if (propertyValue != null) {
-					elementIdentifier.setAccessible(true);
-					elementIdentifier.set(obj, new String(propertyValue));
-				} 
+				if (elementIdentifier != null) {
+					propertyValue = prop.getProperty(elementIdentifier
+							.getName());
+					if (propertyValue != null) {
+						elementIdentifier.setAccessible(true);
+						elementIdentifier.set(obj, new String(propertyValue));
+					}
+				}
 			}
-								}
 		} catch (IOException e) {
 			asserts.log("Unable to read ElementIdentifiers.properties file.");
 			asserts.addVerificationFailure(e);

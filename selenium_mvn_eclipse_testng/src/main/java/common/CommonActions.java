@@ -521,7 +521,7 @@ public class CommonActions {
 		String protocol = "imaps";
 		String host = "imap.gmail.com";
 		String inboxFolder = "INBOX";
-		String subjectTextAfterTrimmedForSpaces=subjectText.trim();
+		String subjectTextAfterTrimmedForSpaces = subjectText.trim();
 
 		Properties props = System.getProperties();
 		props.setProperty("mail.store.protocol", "imaps");
@@ -535,18 +535,21 @@ public class CommonActions {
 			Folder folder = store.getFolder(inboxFolder);
 			folder.open(Folder.READ_ONLY);
 
-			for(int i=0;i<5 ;i++)
-			{
-				messages = folder.search(new SubjectTerm(subjectTextAfterTrimmedForSpaces),
-						folder.getMessages());
-				if(messages.length!=0)
+			for (int i = 0; i < 5; i++) {
+				messages = folder
+						.search(new SubjectTerm(
+								subjectTextAfterTrimmedForSpaces), folder
+								.getMessages());
+				if (messages.length != 0)
 					break;
 			}
-			
-			asserts.log("Searching mail with subject " + subjectTextAfterTrimmedForSpaces);
+
+			asserts.log("Searching mail with subject "
+					+ subjectTextAfterTrimmedForSpaces);
 
 			if (messages.length != 0) {
-				asserts.log("Found mail(s) with subject -" + subjectTextAfterTrimmedForSpaces);
+				asserts.log("Found mail(s) with subject -"
+						+ subjectTextAfterTrimmedForSpaces);
 				for (Message mail : messages) {
 					isMailDateSameAsCurrentDate = (dateFormat
 							.format(currentDate)).equalsIgnoreCase(dateFormat
@@ -567,8 +570,8 @@ public class CommonActions {
 					}
 				}
 			} else
-				asserts.log("The notification mail with subject " + subjectTextAfterTrimmedForSpaces
-						+ " not found");
+				asserts.log("The notification mail with subject "
+						+ subjectTextAfterTrimmedForSpaces + " not found");
 			store.close();
 
 		} catch (MessagingException e) {

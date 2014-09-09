@@ -12,6 +12,18 @@ import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
+/**
+ * Measure the total time involved to do the following actions - 
+ * - Clicking on Contact us button 
+ * - Filling all the field on the contact us form 
+ * - Submitting the form 
+ * - Verifying the 'Thanks....' message on the page. 
+ * 
+ * Compare this total time with an expected time and set the status of test case based on that.
+ * 
+ * @author Nilesh Awasthey
+ *
+ */
 public class VerifyBasicPerformanceOfContactUsForm extends CommonActions {
 
 	String browserToUse;
@@ -21,7 +33,7 @@ public class VerifyBasicPerformanceOfContactUsForm extends CommonActions {
 	String ById = "id";
 	String ByXpath = "xpath";
 	String ByClassName = "className";
-	CustomAsserts asserts=new CustomAsserts();
+	CustomAsserts asserts = new CustomAsserts();
 
 	@BeforeTest
 	@Parameters({ "browser", "appURL", "inputDataFile" })
@@ -69,8 +81,7 @@ public class VerifyBasicPerformanceOfContactUsForm extends CommonActions {
 		WebElement contactUsButton = waitAndSearchElementUntilClickable(ById,
 				ElementIdentifiers.contactUsButtonId);
 
-		asserts
-				.log("Searching and clicking on the CONTACT US button....");
+		asserts.log("Searching and clicking on the CONTACT US button....");
 		contactUsButton.click();
 		asserts.log("CONTACT US button was clicked");
 
@@ -93,8 +104,7 @@ public class VerifyBasicPerformanceOfContactUsForm extends CommonActions {
 				contactForm, ByClassName,
 				ElementIdentifiers.contactSubmitButtonClassName);
 
-		asserts
-				.log("TESTCASE - Verify the execution time for submission of the Contact us form is in specified range.... ");
+		asserts.log("TESTCASE - Verify the execution time for submission of the Contact us form is in specified range.... ");
 
 		contactNameTextBox.clear();
 		contactEmailTextBox.clear();
@@ -111,8 +121,7 @@ public class VerifyBasicPerformanceOfContactUsForm extends CommonActions {
 		// Set Issue details field value
 
 		contactIssueDetailsTextArea.sendKeys(issueDetailsText);
-		asserts.log("Issue details Textarea value is set to "
-				+ emailTestString);
+		asserts.log("Issue details Textarea value is set to " + emailTestString);
 
 		// Click on Submit button
 		contactSubmitbutton.click();
@@ -129,18 +138,15 @@ public class VerifyBasicPerformanceOfContactUsForm extends CommonActions {
 		endTime = System.currentTimeMillis();
 
 		actualTotalTimeInMilliSeconds = endTime - startTime;
-		asserts
-				.assertTrue(
-						actualTotalTimeInMilliSeconds < expectedTotalTimeInMilliSeconds,
-						"The actual time for submission of the contact us form"
-								+ actualTotalTimeInMilliSeconds
-								+ "is greater than expected time"
-								+ expectedTotalTimeInMilliSeconds);
-		asserts
-				.log("The actual time for submission of the contact us form"
+		asserts.assertTrue(
+				actualTotalTimeInMilliSeconds < expectedTotalTimeInMilliSeconds,
+				"The actual time for submission of the contact us form"
 						+ actualTotalTimeInMilliSeconds
-						+ "is less than expected time"
+						+ "is greater than expected time"
 						+ expectedTotalTimeInMilliSeconds);
+		asserts.log("The actual time for submission of the contact us form"
+				+ actualTotalTimeInMilliSeconds + "is less than expected time"
+				+ expectedTotalTimeInMilliSeconds);
 
 	}
 
