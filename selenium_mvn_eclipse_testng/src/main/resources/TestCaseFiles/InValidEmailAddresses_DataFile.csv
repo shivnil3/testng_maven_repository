@@ -1,0 +1,22 @@
+#This is the data file for the SubmitContactFormAndVerifyEmail test case file. 
+#The data should be made in the following comma separated format -
+#Name,emailaddress,Problem details
+#Example-Nil,shiv@gmail.com,Test issues
+Nil,Abc..123@gmail.com,
+Nil,no-reply@gmail.com,
+Nil,#@%^%#$@#$@#.com,
+Nil,@gmail.com,
+Nil,Joe Smith <shiv@gmail.com>,
+Nil,shiv.gmail.com,
+Nil,shiv@gmail@gmail.com,
+Nil,.shiv@gmail.com,
+Nil,shiv.@gmail.com,
+Nil,shiv..shiv@gmail.com,
+Nil,shiv@gmail.com (Shiv),
+Nil,shiv@gmail,
+Nil,shiv@-gmail.com,
+Nil,shiv@gmail.web,
+Nil,shiv@111.222.333.44444,
+Nil,shiv@gmail..com,
+Nil,"Nil A"@example.com,
+Nil,"shiv"@gmail.com,

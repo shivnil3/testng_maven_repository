@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite" parallel="none" thread-count="2">
+	<listeners>
+		<listener class-name="loggerFunctions.CustomTestListener" />
+	</listeners>
+
+	<!--  <test name="VerifyElements">
+		<parameter name="browser" value="Chrome" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<classes>
+			<class name="testcases.VerifyElements" />
+		</classes>
+	</test>
+
+	<test name="VerifyRequiredFields">
+		<parameter name="browser" value="Opera" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<parameter name="inputDataFile"
+			value="src/main/resources/TestCaseFiles/VerifyRequiredFields_DataFile.csv" />
+		<classes>
+			<class name="testcases.VerifyRequiredFields" />
+		</classes>
+	</test>-->
+
+	<test name="SubmitContactFormAndVerifyEmail">
+		<parameter name="browser" value="Firefox" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<parameter name="inputDataFile"
+			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
+		<classes>
+			<class name="testcases.SubmitContactFormAndVerifyEmail" />
+		</classes>
+	</test>
+
+	<!--  <test name="VerifyToolTips">
+		<parameter name="browser" value="Firefox" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<classes>
+			<class name="testcases.VerifyToolTips" />
+		</classes>
+	</test>
+
+
+	<test name="VerifyValidAndInvalidEmailAddress" preserve-order="true">
+		<parameter name="browser" value="Firefox" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<parameter name="validEmailDataFile"
+			value="src/main/resources/TestCaseFiles/ValidEmailAddresses_DataFile.csv" />
+		<parameter name="invalidEmailDataFile"
+			value="src/main/resources/TestCaseFiles/InValidEmailAddresses_DataFile.csv" />
+		<classes>
+			<class name="testcases.VerifyValidAndInvalidEmailAddress" />
+		</classes>
+	</test>
+
+	<test name="VerifyCloseIconFunctionality">
+		<parameter name="browser" value="Firefox" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<parameter name="inputDataFile"
+			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
+		<classes>
+			<class name="testcases.VerifyCloseIconFunctionality" />
+		</classes>
+	</test>
+
+	<test name="SubmitContactUsFormWithKeyboardOnly">
+		<parameter name="browser" value="Firefox" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<parameter name="inputDataFile"
+			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
+		<classes>
+			<class name="testcases.SubmitContactUsFormWithKeyboardOnly" />
+		</classes>
+	</test>
+
+	<test name="VerifyBasicPerformanceOfContactUsForm">
+		<parameter name="browser" value="Opera" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<parameter name="inputDataFile"
+			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
+		<classes>
+			<class name="testcases.VerifyBasicPerformanceOfContactUsForm" />
+		</classes>
+	</test>
+
+	<test name="VerifyInValidStringsAreHandledProperly">
+		<parameter name="browser" value="Firefox" />
+		<parameter name="appURL" value="http://test.helpshift.com" />
+		<parameter name="inputDataFile"
+			value="src/main/resources/TestCaseFiles/ValidAndInvalidString_DataFile.csv" />
+		<classes>
+			<class name="testcases.VerifyInValidStringsAreHandledProperly" />
+		</classes>
+	</test>-->
+
+</suite> 
