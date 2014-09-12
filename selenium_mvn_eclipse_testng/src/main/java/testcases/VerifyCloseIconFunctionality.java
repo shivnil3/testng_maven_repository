@@ -3,10 +3,13 @@ package testcases;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+
+import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import common.CommonActions;
 import common.ElementIdentifiers;
@@ -21,9 +24,12 @@ import loggerFunctions.CustomAsserts;
  * @author Nilesh Awasthey
  *
  */
-public class VerifyCloseIconFunctionality extends CommonActions {
+public class VerifyCloseIconFunctionality extends CommonActions implements
+		SauceOnDemandSessionIdProvider {
 
 	String browserToUse;
+	String browserVersion;
+	String environmentOS;
 	String webApplicationURL;
 	String testcaseFile;
 	WebDriver browserDriver;
@@ -31,36 +37,52 @@ public class VerifyCloseIconFunctionality extends CommonActions {
 	String ByXpath = "xpath";
 	String ByClassName = "className";
 	CustomAsserts asserts = new CustomAsserts();
+	ThreadLocal<WebDriver> webDriver = new ThreadLocal<WebDriver>();
+	ThreadLocal<String> sessionId = new ThreadLocal<String>();
+
+	@Override
+	public String getSessionId() {
+		return sessionId.get();
+	}
+
+	@BeforeSuite
+	@Parameters({ "SauceOnDemandUsername", "SauceOnDemandAccessKey" })
+	public void initializeSauceCredentails(String sauceOnDemandUsername,
+			String sauceOnDemandAccessKey) {
+		setSauceOnDemandUsername(sauceOnDemandUsername);
+		setSauceOnDemandAccessKey(sauceOnDemandAccessKey);
+
+	}
 
 	@BeforeTest
-	@Parameters({ "browser", "appURL", "inputDataFile" })
-	public void initializeValues(String browser, String appURL,
-			String inputDataFile) {
+	@Parameters({ "browser", "version", "os", "appURL", "inputDataFile" })
+	public void initializeValues(String browser, String version, String os,
+			String appURL, String inputDataFile) {
 		browserToUse = browser;
+		browserVersion = version;
+		environmentOS = os;
 		webApplicationURL = appURL;
 		testcaseFile = inputDataFile;
 	}
 
 	@BeforeTest
 	public void launchWebApp() {
-		/*
-		 * launch browser using the url specified in the testng.xml file
-		 */
-		browserDriver = launchURLInBrowser(webApplicationURL, browserToUse);
+		setTestCaseName(getClass().getSimpleName());
+		browserDriver = createDriver(webDriver, sessionId, browserToUse,
+				browserVersion, environmentOS);
 		asserts.assertNotNull(browserDriver,
 				"Unable to launch browser.Terminating script....");
+		launchUrlInBrowser(browserDriver, webApplicationURL);
+	}
+
+	@AfterTest
+	public void closeWebApp() {
+		closeBrowser(browserDriver);
 	}
 
 	@DataProvider
 	public String[][] getData() {
 		return getTestcaseFileData(testcaseFile);
-	}
-
-	@AfterTest
-	public void closeWebApp() {
-		// Close the browser
-		closeBrowser(browserDriver);
-
 	}
 
 	@Test(dataProvider = "getData")

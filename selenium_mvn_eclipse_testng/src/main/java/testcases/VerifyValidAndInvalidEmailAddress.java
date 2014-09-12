@@ -3,33 +3,39 @@ package testcases;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+
+import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import common.CommonActions;
 import common.ElementIdentifiers;
 import loggerFunctions.CustomAsserts;
 
 /**
- * It covers two scenarios - 
+ * It covers two scenarios -
  * 
- * - Provide a set of valid email addresses through
- * data file(ValidEmailAddresses_DataFile.csv) and verify the Email text box
- * does not display any validation message 
+ * - Provide a set of valid email addresses through data
+ * file(ValidEmailAddresses_DataFile.csv) and verify the Email text box does not
+ * display any validation message
  * 
- * - Provide a set of invalid email
- * addresses through data file(InValidEmailAddresses_DataFile.csv) and verify
- * the Email text box displays a 'Invalid email address' message for each of them
+ * - Provide a set of invalid email addresses through data
+ * file(InValidEmailAddresses_DataFile.csv) and verify the Email text box
+ * displays a 'Invalid email address' message for each of them
  * 
- *  
+ * 
  * @author Nilesh Awasthey
  *
  */
-public class VerifyValidAndInvalidEmailAddress extends CommonActions {
+public class VerifyValidAndInvalidEmailAddress extends CommonActions implements
+		SauceOnDemandSessionIdProvider {
 
 	String browserToUse;
+	String browserVersion;
+	String environmentOS;
 	String webApplicationURL;
 	String validEmailAddressesDataFile;
 	String invalidEmailAddressesDataFile;
@@ -45,26 +51,46 @@ public class VerifyValidAndInvalidEmailAddress extends CommonActions {
 	WebElement contactSubmitbutton;
 	WebElement validationMsgContactEmail;
 	CustomAsserts asserts = new CustomAsserts();
+	ThreadLocal<WebDriver> webDriver = new ThreadLocal<WebDriver>();
+	ThreadLocal<String> sessionId = new ThreadLocal<String>();
+
+	@Override
+	public String getSessionId() {
+		return sessionId.get();
+	}
+
+	@BeforeSuite
+	@Parameters({ "SauceOnDemandUsername", "SauceOnDemandAccessKey" })
+	public void initializeSauceCredentails(String sauceOnDemandUsername,
+			String sauceOnDemandAccessKey) {
+		setSauceOnDemandUsername(sauceOnDemandUsername);
+		setSauceOnDemandAccessKey(sauceOnDemandAccessKey);
+
+	}
 
 	@BeforeTest
-	@Parameters({ "browser", "appURL", "validEmailDataFile",
+	@Parameters({ "browser", "version", "os", "appURL", "validEmailDataFile",
 			"invalidEmailDataFile" })
-	public void initializeValues(String browser, String appURL,
-			String validEmailDataFile, String invalidEmailDataFile) {
+	public void initializeValues(String browser, String version, String os,
+			String appURL, String validEmailDataFile,
+			String invalidEmailDataFile) {
 		browserToUse = browser;
+		browserVersion = version;
+		environmentOS = os;
 		webApplicationURL = appURL;
 		validEmailAddressesDataFile = validEmailDataFile;
 		invalidEmailAddressesDataFile = invalidEmailDataFile;
+
 	}
 
 	@BeforeTest
 	public void launchContactUsForm() {
-		/*
-		 * launch browser using the url specified in the testng.xml file
-		 */
-		browserDriver = launchURLInBrowser(webApplicationURL, browserToUse);
+		setTestCaseName(getClass().getSimpleName());
+		browserDriver = createDriver(webDriver, sessionId, browserToUse,
+				browserVersion, environmentOS);
 		asserts.assertNotNull(browserDriver,
 				"Unable to launch browser.Terminating script....");
+		launchUrlInBrowser(browserDriver, webApplicationURL);
 
 		contactUsButton = waitAndSearchElementUntilClickable(ById,
 				ElementIdentifiers.contactUsButtonId);
@@ -96,6 +122,11 @@ public class VerifyValidAndInvalidEmailAddress extends CommonActions {
 
 	}
 
+	@AfterTest
+	public void closeWebApp() {
+		closeBrowser(browserDriver);
+	}
+
 	@DataProvider
 	public String[][] getValidEmailAddressData() {
 		return getTestcaseFileData(validEmailAddressesDataFile);
@@ -104,13 +135,6 @@ public class VerifyValidAndInvalidEmailAddress extends CommonActions {
 	@DataProvider
 	public String[][] getInValidEmailAddressData() {
 		return getTestcaseFileData(invalidEmailAddressesDataFile);
-	}
-
-	@AfterTest
-	public void closeWebApp() {
-		// Close the browser
-		closeBrowser(browserDriver);
-
 	}
 
 	@Test(dataProvider = "getValidEmailAddressData", priority = 1)

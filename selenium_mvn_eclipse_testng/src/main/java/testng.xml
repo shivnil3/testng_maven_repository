@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Suite" parallel="tests" thread-count="2">
+<suite name="Suite" parallel="tests" thread-count="3">
+	<parameter name="SauceOnDemandUsername" value="shivnil3" />
+	<parameter name="SauceOnDemandAccessKey" value="12d29de3-feed-4690-967a-0d705543f199" />
 	<listeners>
 		<listener class-name="loggerFunctions.CustomTestListener" />
 	</listeners>
 
 	<test name="VerifyElements">
-		<parameter name="browser" value="Chrome" />
+		<parameter name="browser" value="OPERA" />
+		<parameter name="version" value="12" />
+		<parameter name="os" value="Linux" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<classes>
 			<class name="testcases.VerifyElements" />
 		</classes>
 	</test>
 
+
 	<test name="VerifyRequiredFields">
-		<parameter name="browser" value="Chrome" />
+		<parameter name="browser" value="SAFARI" />
+		<parameter name="version" value="7" />
+		<parameter name="os" value="OS X 10.9" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/VerifyRequiredFields_DataFile.csv" />
@@ -24,7 +31,9 @@
 	</test>
 
 	<test name="SubmitContactFormAndVerifyEmail">
-		<parameter name="browser" value="Firefox" />
+		<parameter name="browser" value="CHROME" />
+		<parameter name="version" value="32" />
+		<parameter name="os" value="OS X 10.9" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
@@ -34,16 +43,19 @@
 	</test>
 
 	<test name="VerifyToolTips">
-		<parameter name="browser" value="Firefox" />
+		<parameter name="browser" value="FIREFOX" />
+		<parameter name="version" value="19" />
+		<parameter name="os" value="Windows 7" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<classes>
 			<class name="testcases.VerifyToolTips" />
 		</classes>
 	</test>
 
-
 	<test name="VerifyValidAndInvalidEmailAddress" preserve-order="true">
-		<parameter name="browser" value="Chrome" />
+		<parameter name="browser" value="CHROME" />
+		<parameter name="version" value="35" />
+		<parameter name="os" value="Linux" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="validEmailDataFile"
 			value="src/main/resources/TestCaseFiles/ValidEmailAddresses_DataFile.csv" />
@@ -55,7 +67,9 @@
 	</test>
 
 	<test name="VerifyCloseIconFunctionality">
-		<parameter name="browser" value="Opera" />
+		<parameter name="browser" value="OPERA" />
+		<parameter name="version" value="11" />
+		<parameter name="os" value="Windows 7" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
@@ -65,7 +79,9 @@
 	</test>
 
 	<test name="SubmitContactUsFormWithKeyboardOnly">
-		<parameter name="browser" value="Firefox" />
+		<parameter name="browser" value="SAFARI" />
+		<parameter name="version" value="5" />
+		<parameter name="os" value="OS X 10.6" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
@@ -75,7 +91,9 @@
 	</test>
 
 	<test name="VerifyBasicPerformanceOfContactUsForm">
-		<parameter name="browser" value="Firefox" />
+		<parameter name="browser" value="internet explorer" />
+		<parameter name="version" value="11" />
+		<parameter name="os" value="Windows 8.1" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/ValidInputForAllFields_DataFile.csv" />
@@ -85,7 +103,9 @@
 	</test>
 
 	<test name="VerifyInValidStringsAreHandledProperly">
-		<parameter name="browser" value="Chrome" />
+		<parameter name="browser" value="FIREFOX" />
+		<parameter name="version" value="19" />
+		<parameter name="os" value="Windows 7" />
 		<parameter name="appURL" value="http://test.helpshift.com" />
 		<parameter name="inputDataFile"
 			value="src/main/resources/TestCaseFiles/ValidAndInvalidString_DataFile.csv" />

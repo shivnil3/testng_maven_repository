@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,13 +33,21 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.Listeners;
 
 import loggerFunctions.CustomAsserts;
 
 import com.opera.core.systems.OperaDriver;
+import com.saucelabs.common.SauceOnDemandAuthentication;
+import com.saucelabs.common.SauceOnDemandSessionIdProvider;
+import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
+import com.saucelabs.testng.SauceOnDemandTestListener;
 
 /**
  * Contains the common methods used by the test cases
@@ -45,7 +55,11 @@ import com.opera.core.systems.OperaDriver;
  * @author Nilesh Awasthey
  *
  */
-public class CommonActions {
+
+public class CommonActions
+// implements /*SauceOnDemandSessionIdProvider,*/
+// SauceOnDemandAuthenticationProvider
+{
 
 	private String ieDriverExe = "src/main/resources/BrowserDriverExe/IEDriverServer.exe";
 	private String chromeDriverExe = "src/main/resources/BrowserDriverExe/chromedriver.exe";
@@ -54,9 +68,12 @@ public class CommonActions {
 	private final String byClassName = "org.openqa.selenium.By";
 	private Method byMethod;
 	private WebDriver currentDriver;
-	CustomAsserts asserts = new CustomAsserts();
-
+	private String sauceOnDemandUsername;
+	private String sauceOnDemandAccessKey;
 	private long waitTimeInSeconds = 30;
+	private String testCaseName;
+
+	CustomAsserts asserts = new CustomAsserts();
 
 	private enum Bylocator {
 		id, className, name, tagName, cssSelector, linkText, partialLinkText, xpath
@@ -70,180 +87,15 @@ public class CommonActions {
 		try {
 			byClass = Class.forName(byClassName);
 			paramString = String.class;
-
 		} catch (ClassNotFoundException e) {
 			asserts.log(byClassName + " class not found!!!");
 			asserts.addVerificationFailure(e);
-
 		}
 
 	}
 
-	/**
-	 * Launch url in the specified browser
-	 * 
-	 * @param url
-	 * @param browser
-	 * @return browserDriver
-	 */
-	public WebDriver launchURLInBrowser(String url, String browser) {
-		WebDriver browserDriver = null;
-
-		// Works only on java7, not using the case option
-		/*
-		 * switch (browser.toUpperCase()) { case "INTERNETEXPLORER":
-		 * browserDriver = launchIEBrowser(); break; case "FIREFOX":
-		 * browserDriver = launchFirefoxBrowser(); break; case "SAFARI":
-		 * browserDriver = launchSafariBrowser(); break; case "OPERA":
-		 * browserDriver = launchOperaBrowser(); break; case "CHROME":
-		 * browserDriver = launchChromeBrowser(); break; default:
-		 * asserts.asserts.log("Invalid or not supported browser value"); break;
-		 * }
-		 */
-		if (browser.equalsIgnoreCase("InternetExplorer")) {
-			browserDriver = launchIEBrowser();
-		} else if (browser.equalsIgnoreCase("Firefox")) {
-			browserDriver = launchFirefoxBrowser();
-		} else if (browser.equalsIgnoreCase("Safari")) {
-			browserDriver = launchSafariBrowser();
-		} else if (browser.equalsIgnoreCase("Opera")) {
-			browserDriver = launchOperaBrowser();
-		} else if (browser.equalsIgnoreCase("Chrome")) {
-			browserDriver = launchChromeBrowser();
-		} else
-			asserts.log("Invalid or not supported browser value");
-
-		if ((browserDriver != null)) {
-			try {
-				browserDriver.get(url);
-				setCurrentDriver(browserDriver);
-				asserts.log("The specified url - " + url
-						+ " was launched succesfully in " + browser
-						+ " browser.");
-			} catch (Exception e) {
-				asserts.log("Unable to launch the url in " + browser
-						+ " browser");
-				asserts.addVerificationFailure(e);
-				return browserDriver;
-			}
-		} else {
-			asserts.log("Unable to launch " + browser
-					+ "using the respective driver.");
-		}
-
-		return browserDriver;
-
-	}
-
-	/**
-	 * Launch Internet Explorer using InternetExplorerDriver
-	 * 
-	 * @return ieDriver
-	 */
-	private WebDriver launchIEBrowser() {
-		WebDriver ieDriver = null;
-		try {
-			System.setProperty("webdriver.ie.driver", ieDriverExe);
-			ieDriver = new InternetExplorerDriver();
-			ieDriver.manage().window().maximize();
-		} catch (IllegalStateException e) {
-			asserts.log("The path to the IE driver executable is not set correctly.");
-			asserts.addVerificationFailure(e);
-
-		} catch (Exception e) {
-			asserts.log("Unable to launch the Internet Explorer");
-			asserts.addVerificationFailure(e);
-
-		}
-		return ieDriver;
-	}
-
-	/**
-	 * Launch Firefox browser using FirefoxDriver
-	 * 
-	 * @return firefoxDriver
-	 */
-	private WebDriver launchFirefoxBrowser() {
-		WebDriver firefoxDriver = null;
-		try {
-			firefoxDriver = new FirefoxDriver();
-			firefoxDriver.manage().window().maximize();
-		} catch (Exception e) {
-			asserts.log("Unable to launch the Firefox browser");
-			asserts.addVerificationFailure(e);
-		}
-		return firefoxDriver;
-	}
-
-	/**
-	 * Launch Chrome browser using Chromedriver
-	 * 
-	 * @return chromeDriver
-	 */
-	private WebDriver launchChromeBrowser() {
-		WebDriver chromeDriver = null;
-		try {
-			System.setProperty("webdriver.chrome.driver", chromeDriverExe);
-			chromeDriver = new ChromeDriver();
-			chromeDriver.manage().window().maximize();
-		} catch (Exception e) {
-			asserts.log("Unable to launch the Chrome browser.There could be multiple reasons for the failure. Chromedriver does not support the version above Opera 12, please install the appopriate versions (preferably using the 32 bit installer)");
-			asserts.addVerificationFailure(e);
-
-		}
-		return chromeDriver;
-	}
-
-	/**
-	 * Launch Safari browser using SafariDriver
-	 * 
-	 * @return safariDriver
-	 */
-	private WebDriver launchSafariBrowser() {
-		WebDriver safariDriver = null;
-		try {
-			safariDriver = new SafariDriver();
-		} catch (Exception e) {
-			asserts.log("Unable to launch the Safari browser");
-			asserts.addVerificationFailure(e);
-
-		}
-		return safariDriver;
-	}
-
-	/**
-	 * Launch Opera browser using OperaDriver
-	 * 
-	 * @return operaDriver
-	 */
-	private WebDriver launchOperaBrowser() {
-		WebDriver operaDriver = null;
-		try {
-			operaDriver = new OperaDriver();
-		} catch (Exception e) {
-			asserts.log("Unable to launch the Opera browser");
-			asserts.addVerificationFailure(e);
-
-		}
-		return operaDriver;
-	}
-
-	/**
-	 * Returns the current driver
-	 * 
-	 * @return currentDriver
-	 */
-	private WebDriver getCurrentDriver() {
-		return currentDriver;
-	}
-
-	/**
-	 * Sets the current driver
-	 * 
-	 * @param driver
-	 */
-	private void setCurrentDriver(WebDriver driver) {
-		currentDriver = driver;
+	public void launchUrlInBrowser(WebDriver driver, String url) {
+		driver.get(url);
 	}
 
 	/**
@@ -272,35 +124,28 @@ public class CommonActions {
 				byMethod = byClass.getDeclaredMethod(byLocator, paramString);
 				uiElement = getCurrentDriver().findElement(
 						(By) byMethod.invoke(byClass, locatorValue));
-
 			} catch (NoSuchElementException e) {
 				asserts.log("WebElement having " + byLocator + " as "
 						+ locatorValue + "- not found...");
-
 			} catch (NoSuchMethodException e) {
 				asserts.log(byLocator + " method not found in " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (IllegalAccessException e) {
 				asserts.log("Unable to access method " + byLocator
 						+ " from class " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (InvocationTargetException e) {
 				asserts.log("Unable to invoke method " + byLocator
 						+ " from class " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (TimeoutException e) {
 				asserts.log("Timeout!! Unable to find element in specified time using "
 						+ byLocator + " as " + locatorValue);
 				asserts.addVerificationFailure(e);
-
 			} catch (Exception e) {
 				asserts.log("Error while finding element having " + byLocator
 						+ " as " + locatorValue);
 				asserts.addVerificationFailure(e);
-
 			}
 
 		} else
@@ -328,32 +173,26 @@ public class CommonActions {
 			} catch (NoSuchElementException e) {
 				asserts.log("WebElement having " + byLocator + " as "
 						+ locatorValue + "not found...");
-
 			} catch (NoSuchMethodException e) {
 				asserts.log(byLocator + " method not found in " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (IllegalAccessException e) {
 				asserts.log("Unable to access method " + byLocator
 						+ " from class " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (InvocationTargetException e) {
 				asserts.log("Unable to invoke method " + byLocator
 						+ " from class " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (Exception e) {
 				asserts.log("Error while finding element having " + byLocator
 						+ " as " + locatorValue);
 				asserts.addVerificationFailure(e);
-
 			}
 		} else
 			asserts.log("The ByLocator value passed to searchElements() method is not supported or invalid");
 
 		return uiElements;
-
 	}
 
 	/**
@@ -372,7 +211,6 @@ public class CommonActions {
 				.until(ExpectedConditions.visibilityOf(searchElement(byLocator,
 						locatorValue)));
 		return uiElementAfterWait;
-
 	}
 
 	/**
@@ -391,7 +229,6 @@ public class CommonActions {
 				.until(ExpectedConditions.elementToBeClickable(searchElement(
 						byLocator, locatorValue)));
 		return uiElementAfterWait;
-
 	}
 
 	/**
@@ -411,7 +248,6 @@ public class CommonActions {
 						.visibilityOf(searchElementInParentElement(
 								parentElement, byLocator, locatorValue)));
 		return uiElementAfterWait;
-
 	}
 
 	/**
@@ -471,26 +307,21 @@ public class CommonActions {
 			} catch (NoSuchElementException e) {
 				asserts.log("WebElement having " + byLocator + " as "
 						+ locatorValue + "not found...");
-
 			} catch (NoSuchMethodException e) {
 				asserts.log(byLocator + " method not found in " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (IllegalAccessException e) {
 				asserts.log("Unable to access method " + byLocator
 						+ " from class " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (InvocationTargetException e) {
 				asserts.log("Unable to invoke method " + byLocator
 						+ " from class " + byClass);
 				asserts.addVerificationFailure(e);
-
 			} catch (Exception e) {
 				asserts.log("Error while finding element having " + byLocator
 						+ " as " + locatorValue);
 				asserts.addVerificationFailure(e);
-
 			}
 		} else
 			asserts.log("The ByLocator value passed to searchElementInParentElement() method is not supported or invalid.");
@@ -546,7 +377,6 @@ public class CommonActions {
 
 			asserts.log("Searching mail with subject "
 					+ subjectTextAfterTrimmedForSpaces);
-
 			if (messages.length != 0) {
 				asserts.log("Found mail(s) with subject -"
 						+ subjectTextAfterTrimmedForSpaces);
@@ -554,26 +384,21 @@ public class CommonActions {
 					isMailDateSameAsCurrentDate = (dateFormat
 							.format(currentDate)).equalsIgnoreCase(dateFormat
 							.format(mail.getReceivedDate()));
-
 					asserts.log("Found mail(s) having received date as as -"
 							+ dateFormat.format(currentDate));
 					if (isMailDateSameAsCurrentDate) {
 						mailContent = mail.getContent().toString();
-						if (mailContent.contains(contentText))
-
-						{
+						if (mailContent.contains(contentText)) {
 							isMailFound = true;
 							asserts.log("Found mail containing content -"
 									+ contentText);
 						}
-
 					}
 				}
 			} else
 				asserts.log("The notification mail with subject "
 						+ subjectTextAfterTrimmedForSpaces + " not found");
 			store.close();
-
 		} catch (MessagingException e) {
 			asserts.log("Unable to retrieve message from mail account");
 			asserts.addVerificationFailure(e);
@@ -581,9 +406,7 @@ public class CommonActions {
 		} catch (IOException e) {
 			asserts.log("Unable to retrieve message content");
 			asserts.addVerificationFailure(e);
-
 		}
-
 		return isMailFound;
 
 	}
@@ -718,5 +541,247 @@ public class CommonActions {
 		}
 		return byLocatorFound;
 	}
+
+	/**
+	 * /** Constructs a new {@link RemoteWebDriver} instance which is configured
+	 * to use the capabilities defined by the browser, version and os
+	 * parameters, and which is configured to run against
+	 * ondemand.saucelabs.com, using the username and access key populated by
+	 * the {@link #authentication} instance.
+	 *
+	 * @param browser
+	 *            Represents the browser to be used as part of the test run.
+	 * @param version
+	 *            Represents the version of the browser to be used as part of
+	 *            the test run.
+	 * @param os
+	 *            Represents the operating system to be used as part of the test
+	 *            run.
+	 * @return WebDriver
+	 */
+	public WebDriver createDriver(ThreadLocal<WebDriver> webDriver,
+			ThreadLocal<String> sessionId, String browser, String version,
+			String os) {
+		try {
+
+			DesiredCapabilities capabilities = new DesiredCapabilities();
+			capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
+			if (version != null) {
+				capabilities.setCapability(CapabilityType.VERSION, version);
+			}
+			capabilities.setCapability(CapabilityType.PLATFORM, os);
+			capabilities.setCapability("name", getTestCaseName());
+			webDriver.set(new RemoteWebDriver(new URL("http://"
+					+ getSauceOnDemandUsername() + ":"
+					+ getSauceOnDemandAccessKey()
+					+ "@ondemand.saucelabs.com:80/wd/hub"), capabilities));
+			sessionId.set(((RemoteWebDriver) webDriver.get()).getSessionId()
+					.toString());
+			setCurrentDriver(webDriver.get());
+
+		} catch (MalformedURLException e) {
+			asserts.log("Unable to connect to the SaunceOnDemand hub...");
+			asserts.addVerificationFailure(e);
+		} catch (Exception e) {
+			asserts.log("Unable to initiate WebDriver...");
+			asserts.addVerificationFailure(e);
+		}
+
+		return getCurrentDriver();
+	}
+
+	/**
+	 * Returns the value of the cuurrent runnng test case
+	 * 
+	 * @return
+	 */
+	public String getTestCaseName() {
+		return testCaseName;
+	}
+
+	/**
+	 * Sets the value for the current running test case
+	 * 
+	 * @param testCaseName
+	 */
+	public void setTestCaseName(String testCaseName) {
+		this.testCaseName = testCaseName;
+	}
+
+	/**
+	 * Returns the value of sauceOnDemandUsername used to connect to the
+	 * SauceOnDemand
+	 * 
+	 * @return
+	 */
+	public String getSauceOnDemandUsername() {
+		return sauceOnDemandUsername;
+	}
+
+	/**
+	 * Sets the value of sauceOnDemandUsername used to connect to the
+	 * SauceOnDemand
+	 * 
+	 * @param sauceOnDemandUsername
+	 */
+	public void setSauceOnDemandUsername(String sauceOnDemandUsername) {
+		this.sauceOnDemandUsername = sauceOnDemandUsername;
+	}
+
+	/**
+	 * Returns the value of sauceOnDemandAccessKey used to connect to the
+	 * SauceOnDemand
+	 * 
+	 * @return sauceOnDemandAccessKey
+	 */
+	public String getSauceOnDemandAccessKey() {
+		return sauceOnDemandAccessKey;
+	}
+
+	/**
+	 * Sets the value for sauceOnDemanAccessKey used to connect to the
+	 * SauceOnDemand
+	 * 
+	 * @param sauceOnDemanAccessKey
+	 */
+	public void setSauceOnDemandAccessKey(String sauceOnDemandAccessKey) {
+		this.sauceOnDemandAccessKey = sauceOnDemandAccessKey;
+	}
+
+	/**
+	 * Returns the current driver
+	 * 
+	 * @return currentDriver
+	 */
+	private WebDriver getCurrentDriver() {
+		return currentDriver;
+	}
+
+	/**
+	 * Sets the current driver
+	 * 
+	 * @param driver
+	 */
+	public void setCurrentDriver(WebDriver driver) {
+		currentDriver = driver;
+
+	}
+
+	// Commenting these methods as they are not used while running on Sauce
+	// labs. Using a RemoteWebDriver which will take the browser name at runtime
+	// and simulate the corresponding browser driver function. This code can be
+	// de-commented and test cases can be modified to run on local environment.
+
+	/**
+	 * Launch url in the specified browser
+	 * 
+	 * @param url
+	 * @param browser
+	 * @return browserDriver
+	 */
+	/*
+	 * public WebDriver launchURLInBrowser(String url, String browser) {
+	 * WebDriver browserDriver = null;
+	 * 
+	 * // Works only on java7, not using the case option
+	 * 
+	 * switch (browser.toUpperCase()) { case "INTERNETEXPLORER": browserDriver =
+	 * launchIEBrowser(); break; case "FIREFOX": browserDriver =
+	 * launchFirefoxBrowser(); break; case "SAFARI": browserDriver =
+	 * launchSafariBrowser(); break; case "OPERA": browserDriver =
+	 * launchOperaBrowser(); break; case "CHROME": browserDriver =
+	 * launchChromeBrowser(); break; default:
+	 * asserts.asserts.log("Invalid or not supported browser value"); break; }
+	 * 
+	 * if (browser.equalsIgnoreCase("InternetExplorer")) { browserDriver =
+	 * launchIEBrowser(); } else if (browser.equalsIgnoreCase("Firefox")) {
+	 * browserDriver = launchFirefoxBrowser(); } else if
+	 * (browser.equalsIgnoreCase("Safari")) { browserDriver =
+	 * launchSafariBrowser(); } else if (browser.equalsIgnoreCase("Opera")) {
+	 * browserDriver = launchOperaBrowser(); } else if
+	 * (browser.equalsIgnoreCase("Chrome")) { browserDriver =
+	 * launchChromeBrowser(); } else
+	 * asserts.log("Invalid or not supported browser value");
+	 * 
+	 * if ((browserDriver != null)) { try { browserDriver.get(url);
+	 * setCurrentDriver(browserDriver); asserts.log("The specified url - " + url
+	 * + " was launched succesfully in " + browser + " browser."); } catch
+	 * (Exception e) { asserts.log("Unable to launch the url in " + browser +
+	 * " browser"); asserts.addVerificationFailure(e); return browserDriver; } }
+	 * else { asserts.log("Unable to launch " + browser +
+	 * "using the respective driver."); }
+	 * 
+	 * return browserDriver;
+	 * 
+	 * }
+	 *//**
+	 * Launch Internet Explorer using InternetExplorerDriver
+	 * 
+	 * @return ieDriver
+	 */
+	/*
+	 * private WebDriver launchIEBrowser() { WebDriver ieDriver = null; try {
+	 * System.setProperty("webdriver.ie.driver", ieDriverExe); ieDriver = new
+	 * InternetExplorerDriver(); ieDriver.manage().window().maximize(); } catch
+	 * (IllegalStateException e) {
+	 * asserts.log("The path to the IE driver executable is not set correctly."
+	 * ); asserts.addVerificationFailure(e);
+	 * 
+	 * } catch (Exception e) {
+	 * asserts.log("Unable to launch the Internet Explorer");
+	 * asserts.addVerificationFailure(e);
+	 * 
+	 * } return ieDriver; }
+	 *//**
+	 * Launch Firefox browser using FirefoxDriver
+	 * 
+	 * @return firefoxDriver
+	 */
+	/*
+	 * private WebDriver launchFirefoxBrowser() { WebDriver firefoxDriver =
+	 * null; try { firefoxDriver = new FirefoxDriver();
+	 * firefoxDriver.manage().window().maximize(); } catch (Exception e) {
+	 * asserts.log("Unable to launch the Firefox browser");
+	 * asserts.addVerificationFailure(e); } return firefoxDriver; }
+	 *//**
+	 * Launch Chrome browser using Chromedriver
+	 * 
+	 * @return chromeDriver
+	 */
+	/*
+	 * private WebDriver launchChromeBrowser() { WebDriver chromeDriver = null;
+	 * try { System.setProperty("webdriver.chrome.driver", chromeDriverExe);
+	 * chromeDriver = new ChromeDriver();
+	 * chromeDriver.manage().window().maximize(); } catch (Exception e) {
+	 * asserts.log(
+	 * "Unable to launch the Chrome browser.There could be multiple reasons for the failure. Chromedriver does not support the version above Opera 12, please install the appopriate versions (preferably using the 32 bit installer)"
+	 * ); asserts.addVerificationFailure(e);
+	 * 
+	 * } return chromeDriver; }
+	 *//**
+	 * Launch Safari browser using SafariDriver
+	 * 
+	 * @return safariDriver
+	 */
+	/*
+	 * private WebDriver launchSafariBrowser() { WebDriver safariDriver = null;
+	 * try { safariDriver = new SafariDriver(); } catch (Exception e) {
+	 * asserts.log("Unable to launch the Safari browser");
+	 * asserts.addVerificationFailure(e);
+	 * 
+	 * } return safariDriver; }
+	 *//**
+	 * Launch Opera browser using OperaDriver
+	 * 
+	 * @return operaDriver
+	 */
+	/*
+	 * private WebDriver launchOperaBrowser() { WebDriver operaDriver = null;
+	 * try { operaDriver = new OperaDriver(); } catch (Exception e) {
+	 * asserts.log("Unable to launch the Opera browser");
+	 * asserts.addVerificationFailure(e);
+	 * 
+	 * } return operaDriver; }
+	 */
 
 }
